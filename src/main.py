@@ -1,7 +1,7 @@
 from minizinc import Instance, Model, Solver
 
 # Load n-Queens model from file
-nqueens = Model("./nqueens.mzn")
+nqueens = Model("./nqueen.mzn")
 # Find the MiniZinc solver configuration for Gecode
 gecode = Solver.lookup("gecode")
 # Create an Instance of the n-Queens model for Gecode
