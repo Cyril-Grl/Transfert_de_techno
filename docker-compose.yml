@@ -1,0 +1,26 @@
+version: '3'
+services:
+  app:
+    build: .
+    container_name: django
+    entrypoint: /start.sh
+    volumes:
+      - .:/code
+      - static-volume:/code/static
+    expose:
+      - "8000"
+    depends_on:
+      - db
+    networks:
+      - web_network
+      - db_network
+
+  minizinc:
+    image: minizinc/minizinc
+    container_name: minizinc
+    networks:
+      - mini_network
+
+networks:
+  web_network:
+    driver: bridge
