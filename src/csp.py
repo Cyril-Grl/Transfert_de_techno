@@ -70,3 +70,9 @@ def create_config_riviere(num_config=1, nb_bison=3, max_etapes=10):
             json.dump(config, conf)
     else:
         print('Le modele ne possede aucune solution')
+
+
+def load_config(config_file):
+    with open(config_file) as conf:
+        config = json.load(conf)
+    return config
