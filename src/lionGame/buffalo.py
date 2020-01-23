@@ -11,9 +11,9 @@ class Buffalo(pygame.sprite.Sprite):
         self._width = width
         self._height = height
         self._mouse_over = False
-        self._on_the_right = True
-        self._on_the_left = False
-        self._on_the_boat = False
+        self._mouse_up_right = False
+        self._mouse_up_left = False
+        self._position = 1
 
         default_image = load_image('buffalo.png', -1)
         default_image = pygame.transform.scale(default_image, (int(width), int(height)))
@@ -36,40 +36,44 @@ class Buffalo(pygame.sprite.Sprite):
         return self.rects[1] if self._mouse_over else self.rects[0]
 
     @property
-    def lion(self):
-        return self._lion
+    def position(self):
+        return self._position
     
 
-    def update(self, mouse_pos, mouse_up):
+    def update(self, mouse_pos, mouse_up_right, mouse_up_left):
         if self.rect.collidepoint(mouse_pos):
             self._mouse_over = True
-            if mouse_up:
+            if mouse_up_right:
+                self._mouse_up_right = True
+                return True
+            if mouse_up_left:
+                self._mouse_up_left = True
                 return True
         else:
             self._mouse_over = False
             return False
 
-    def moveBeast(self):
-        if self._on_the_right and not self._on_the_boat:
-            self._on_the_boat = True
+    def moveBeast(self, boatRight, isBoatFull):
+        if self._mouse_up_right and not boatRight and self._position == 1 and not isBoatFull:
             self.rects[0] = self.images[0].get_rect().move(int(self._width), int(self._y))
             self.rects[1] = self.images[1].get_rect().move(int(self._width), int(self._y))
-        elif self._on_the_left and not self._on_the_boat:
-            self._on_the_boat = True
-            self.rects[0] = self.images[0].get_rect().move(int(self._width), int(self._y))
-            self.rects[1] = self.images[1].get_rect().move(int(self._width), int(self._y))
-        elif self._on_the_boat and self._on_the_right:
-            self._on_the_boat = False
-            self._on_the_right = False
-            self._on_the_left = True
-            self.rects[0] = self.images[0].get_rect().move(int(self._width * 2), int(self._y))
-            self.rects[1] = self.images[1].get_rect().move(int(self._width * 2), int(self._y))
-        elif self._on_the_boat and self._on_the_left:
-            self._on_the_boat = False
-            self._on_the_right = True
-            self._on_the_left = False
+            self._mouse_up_right = False
+            self._position = 3
+        elif self._mouse_up_left and not boatRight and self._position == 3:
             self.rects[0] = self.images[0].get_rect().move(int(self._x), int(self._y))
             self.rects[1] = self.images[1].get_rect().move(int(self._x), int(self._y))
+            self._mouse_up_left = False
+            self._position = 1
+        elif self._mouse_up_right and boatRight and self._position == 3:
+            self.rects[0] = self.images[0].get_rect().move(int(self._width * 2), int(self._y))
+            self.rects[1] = self.images[1].get_rect().move(int(self._width * 2), int(self._y))
+            self._mouse_up_right = False
+            self._position = 2
+        elif self._mouse_up_left and boatRight and self._position == 2 and not isBoatFull:
+            self.rects[0] = self.images[0].get_rect().move(int(self._width), int(self._y))
+            self.rects[1] = self.images[1].get_rect().move(int(self._width), int(self._y))
+            self._mouse_up_left = False
+            self._position = 3
 
     def draw(self, surface):
         surface.blit(self.image, self.rect)

@@ -1,7 +1,7 @@
 import os
 import sys
 import pygame
-from utils.load import *
+
 from pygame.locals import *
 
 def load_image(name, colorkey=None):
