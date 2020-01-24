@@ -9,6 +9,8 @@ from sheep import *
 
 BLUE = (106, 159, 181)
 
+nbBeasts = 4
+
 screen_width = 1200
 screen_height = 200
 
@@ -19,35 +21,56 @@ pygame.init()
 screen = pygame.display.set_mode((screen_width, screen_height))
 pygame.display.set_caption('Minizinc Fever')
 
-width = screen_width / 6
+width = screen_width / (nbBeasts + 1)
+x = 0
+position = 1
 
-sheepWhite1 = Sheep(x = 0, y = 0, width = width, height = screen_height, sheep = True)
-sheepWhite2 = Sheep(x = width, y = 0, width = width, height = screen_height, sheep = True)
-sheepWhite3 = Sheep(x = width * 2, y = 0, width = width, height = screen_height, sheep = True)
+l = []
 
-sheepBlack1 = Sheep(x = screen_width - width, y = 0, width = width, height = screen_height, sheep = False)
-sheepBlack2 = Sheep(x = screen_width - width * 2, y = 0, width = width, height = screen_height, sheep = False)
+for i in range(int(nbBeasts / 2)):
+    sheep = Sheep(x = x, y = 0, width = width, height = screen_height, sheep = True, position = position, screenWidth = screen_width)
+    l.append(sheep)
+    x += width
+    position += 1
 
-l = [sheepWhite1, sheepWhite2, sheepWhite3, sheepBlack1, sheepBlack2]
+x = screen_width - width
+position = nbBeasts + 1
+
+for i in range(int(nbBeasts / 2)):
+    sheepBlack = Sheep(x = x, y = 0, width = width, height = screen_height, sheep = False, position = position, screenWidth = screen_width)
+    l.append(sheepBlack)
+    x -= width
+    position -= 1
+
 clickables = pygame.sprite.RenderUpdates(l)
 
+clock = pygame.time.Clock()
+
+running = True
+
 # main loop
-while True:
+while running:
+
+    clock.tick(60)
 
     mouse_up_right = False
     mouse_up_left = False
 
     for event in pygame.event.get():
-        if event.type == pygame.MOUSEBUTTONUP and event.button == 1:
+        if event.type == QUIT:
+            running = False
+        elif event.type == KEYDOWN and event.key == K_ESCAPE:
+            running = False
+        elif event.type == pygame.MOUSEBUTTONUP and event.button == 1:
         	mouse_up_left = True
-        if event.type == pygame.MOUSEBUTTONUP and event.button == 3:
+        elif event.type == pygame.MOUSEBUTTONUP and event.button == 3:
             mouse_up_right = True
     
     screen.fill(BLUE)
 
     for clickable in clickables:
         if clickable.update(mouse_pos = pygame.mouse.get_pos(), mouse_up_right = mouse_up_right, mouse_up_left = mouse_up_left):
-            clickable.moveBeast()
+            clickable.moveBeast(etat = l)
 
     clickables.draw(screen)
     pygame.display.flip()

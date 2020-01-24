@@ -3,17 +3,20 @@ from utils.load import *
 
 class Sheep(pygame.sprite.Sprite):
 
-    def __init__(self, x, y, width, height, sheep):
+    def __init__(self, x, y, width, height, sheep, position, screenWidth):
         pygame.sprite.Sprite.__init__(self)
 
         self._x = x
         self._y = y
         self._width = width
         self._height = height
+        self._screen_width = screenWidth
         self._mouse_over = False
-        self._sheep = sheep
         self._mouse_up_right = False
         self._mouse_up_left = False
+        self._position = position
+
+        self._sheep = sheep
 
         if sheep:
             default_image = load_image('sheepWhite.png', -1)
@@ -39,6 +42,10 @@ class Sheep(pygame.sprite.Sprite):
     def rect(self):
         return self.rects[1] if self._mouse_over else self.rects[0]
 
+    @property
+    def position(self):
+        return self._position
+
     def update(self, mouse_pos, mouse_up_right, mouse_up_left):
         if self.rect.collidepoint(mouse_pos):
             self._mouse_over = True
@@ -54,23 +61,52 @@ class Sheep(pygame.sprite.Sprite):
             self._mouse_over = False
             return False
 
-    def moveBeast(self):
-        if self._sheep and self._mouse_up_left:
-            self.rects[0] = self.images[0].get_rect().move(int(self._x - self._width), int(self._y))
-            self.rects[1] = self.images[1].get_rect().move(int(self._x - self._width), int(self._y))
-            self._mouse_up_left = False
-        elif self._sheep and self._mouse_up_right:
-            self.rects[0] = self.images[0].get_rect().move(int(self._x + self._width), int(self._y))
-            self.rects[1] = self.images[1].get_rect().move(int(self._x + self._width), int(self._y))
-            self._mouse_up_right = False
-        elif not self._sheep and self._mouse_up_left:
-            self.rects[0] = self.images[0].get_rect().move(int(self._x - self._width), int(self._y))
-            self.rects[1] = self.images[1].get_rect().move(int(self._x - self._width), int(self._y))
-            self._mouse_up_left = False
-        elif not self._sheep and self._mouse_up_right:
-            self.rects[0] = self.images[0].get_rect().move(int(self._x + self._width), int(self._y))
-            self.rects[1] = self.images[1].get_rect().move(int(self._x + self._width), int(self._y))
-            self._mouse_up_right = False
+    def moveBeast(self, etat):
+        beastSide = False
+        beastSideBySide = False
+        for beast in etat:
+            print(beast.position)
+        if self._mouse_up_left and self._x > 0:
+            for beast in etat:
+                if(beast.position == self._position - 1):
+                    beastSide = True
+                if(beast.position == self._position - 2):
+                    beastSideBySide = True
+            print("left : " + str(beastSide) + " " + str(beastSideBySide))        
+            if not beastSide:
+                print("move left 1")
+                self._x -= self._width
+                self.rects[0] = self.images[0].get_rect().move(int(self._x), int(self._y))
+                self.rects[1] = self.images[1].get_rect().move(int(self._x), int(self._y))
+                self._position -= 1
+            elif beastSide and not beastSideBySide and self._x - self._width * 2 >= 0:
+                print("move left 2")
+                self._x -= self._width * 2
+                self.rects[0] = self.images[0].get_rect().move(int(self._x), int(self._y))
+                self.rects[1] = self.images[1].get_rect().move(int(self._x), int(self._y))
+                self._position -= 2
+        elif self._mouse_up_right and self._x < self._screen_width:
+            for beast in etat:
+                if(beast.position == self._position + 1):
+                    beastSide = True
+                if(beast.position == self._position + 2):
+                    beastSideBySide = True
+            print("right : " + str(beastSide) + " " + str(beastSideBySide))  
+            if not beastSide:
+                print("move right 1")
+                self._x += self._width
+                self.rects[0] = self.images[0].get_rect().move(int(self._x), int(self._y))
+                self.rects[1] = self.images[1].get_rect().move(int(self._x), int(self._y))
+                self._position += 1
+            elif beastSide and not beastSideBySide and self._x + self._width * 2 < self._screen_width:
+                print("move right 2")
+                self._x += self._width * 2
+                self.rects[0] = self.images[0].get_rect().move(int(self._x), int(self._y))
+                self.rects[1] = self.images[1].get_rect().move(int(self._x), int(self._y))
+                self._position += 2
+
+        self._mouse_up_left = False
+        self._mouse_up_right = False
 
     def draw(self, surface):
         surface.blit(self.image, self.rect)

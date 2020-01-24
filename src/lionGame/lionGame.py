@@ -95,35 +95,36 @@ while running:
         elif event.type == KEYDOWN and event.key == K_ESCAPE:
             running = False
         elif event.type == KEYDOWN and event.key == 118:
-            if boatRight:
-                boatRight = False
-                textSwitch = font.render("Boat Left !",1,(10, 10, 10))
-            else:
-                boatRight = True
-                textSwitch = font.render("Boat Right !",1,(10, 10, 10))
+            if nbBeastOnBoat >= 1:
+                if boatRight:
+                    boatRight = False
+                    textSwitch = font.render("Boat Left !",1,(10, 10, 10))
+                else:
+                    boatRight = True
+                    textSwitch = font.render("Boat Right !",1,(10, 10, 10))
 
-            nbLionRight = 0
-            nbLionLeft = 0
-            nbBuffaloRight = 0
-            nbBuffaloLeft = 0
+                nbLionRight = 0
+                nbLionLeft = 0
+                nbBuffaloRight = 0
+                nbBuffaloLeft = 0
 
-            for i in range(nbBison):
-                if l[i].position == 1:
-                    nbLionLeft += 1
-                elif l[i].position == 2:
-                    nbLionRight += 1
+                for i in range(nbBison):
+                    if l[i].position == 1:
+                        nbLionLeft += 1
+                    elif l[i].position == 2:
+                        nbLionRight += 1
 
-            for i in range(nbBison, nbBison * 2):
-                if l[i].position == 1:
-                    nbBuffaloLeft += 1
-                elif l[i].position == 2:
-                    nbBuffaloRight += 1
+                for i in range(nbBison, nbBison * 2):
+                    if l[i].position == 1:
+                        nbBuffaloLeft += 1
+                    elif l[i].position == 2:
+                        nbBuffaloRight += 1
 
-            if nbLionRight > nbBuffaloRight and nbBuffaloRight != 0:
-                running = False
+                if nbLionRight > nbBuffaloRight and nbBuffaloRight != 0:
+                    running = False
 
-            if nbLionLeft > nbBuffaloLeft and nbBuffaloLeft != 0:
-                running = False
+                if nbLionLeft > nbBuffaloLeft and nbBuffaloLeft != 0:
+                    running = False
 
         elif event.type == KEYDOWN and event.key == 105:
             text = font.render(str(solution[a + 1]),1,(10, 10, 10))
