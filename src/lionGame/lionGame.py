@@ -3,145 +3,140 @@ import sys
 import pygame
 import json
 
-sys.path.insert(1, os.path.abspath("."))
-
 from pygame.locals import *
-from lion import *
-from buffalo import *
-
-with open("riviere1.json", "r") as read:
-    data = json.load(read)
-
-nbBison = data["nb bisons"]
-solution = data["solution"]
-transferts = data["transferts"]
-final = solution[data["nb etapes"] - 1]
+from lionGame.lion import *
+from lionGame.buffalo import *
+from utils.enum import *
 
 BLUE = (106, 159, 181)
 
-screen_width = 800
-screen_height = 800
+WIDTH = 800
+HEIGHT = 1000
 
-image_height = 1000
+GAME_HEIGHT = 800
 
-# Init pygame
-pygame.mixer.pre_init(44100, 16, 2, 4096)
-pygame.init()
+def gameLion(screen):
 
-screen = pygame.display.set_mode((screen_width, image_height))
-pygame.display.set_caption('Minizinc Fever')
+    with open("riviere1.json", "r") as read:
+        data = json.load(read)
 
-width = screen_width / 3
-height = screen_height / (nbBison * 2)
+    nb_bison = data["nb bisons"]
+    solution = data["solution"]
+    transferts = data["transferts"]
+    final = solution[data["nb etapes"] - 1]
 
-y = 0
+    screen = pygame.display.set_mode((WIDTH, HEIGHT))
+    pygame.display.set_caption('Lion Game')
 
-l = []
+    split_width = WIDTH / 3
+    split_height = GAME_HEIGHT / (nb_bison * 2)
 
-for i in range(nbBison):
-    lion = Lion(x = 0, y = y, width = width, height = height)
-    l.append(lion)
-    y += height
+    y = 0
 
-for i in range(nbBison):
-    buffalo = Buffalo(x = 0, y = y, width = width, height = height)
-    l.append(buffalo)
-    y += height
+    l = []
 
+    for i in range(nb_bison):
+        lion = Lion(x = 0, y = y, width = split_width, height = split_height)
+        l.append(lion)
+        y += split_height
 
-clickables = pygame.sprite.RenderUpdates(l)
+    for i in range(nb_bison):
+        buffalo = Buffalo(x = 0, y = y, width = split_width, height = split_height)
+        l.append(buffalo)
+        y += split_height
 
-clock = pygame.time.Clock()
+    clickables = pygame.sprite.RenderUpdates(l)
 
-font = pygame.font.Font(None,30)
-text = font.render("Press i key ton get the help !",1,(10, 10, 10))
-textpos = (0,900)
+    font = pygame.font.Font(None,30)
 
-textSwitch = font.render("Press v to switch side the boat !",1,(10, 10, 10))
-textSwitchpos = (400,900)
+    text = font.render("Press i key ton get the help !",1,(10, 10, 10))
+    textpos = (0,900)
 
-boatRight = False
+    text_switch = font.render("Press v to switch side the boat !",1,(10, 10, 10))
+    text_switchpos = (400,900)
 
-running = True
+    boat_right = False
 
-# main loop
-while running:
-    clock.tick(60)
+    clock = pygame.time.Clock()
+    running = True
 
-    mouse_up_right = False
-    mouse_up_left = False
-    isBoatFull = False
+    # main loop
+    while running:
+        clock.tick(60)
 
-    nbBeastOnBoat = 0
+        mouse_up_right = False
+        mouse_up_left = False
+        is_boat_full = False
+        nb_beast_on_boat = 0
+        etat = []
 
-    etat = []
-    for beast in clickables:
-        etat.append(beast.position)
-        if beast.position == 3:
-            nbBeastOnBoat += 1
+        for beast in clickables:
+            etat.append(beast.position)
+            if beast.position == 3:
+                nb_beast_on_boat += 1
 
-    if etat in solution:
-        a = solution.index(etat)
+        if etat in solution:
+            a = solution.index(etat)
 
-    if etat == final:
-        running = False
+        if etat == final:
+            return GameState.WIN
 
-    if nbBeastOnBoat == 2:
-        isBoatFull = True
+        if nb_beast_on_boat == 2:
+            is_boat_full = True
 
-    for event in pygame.event.get():
-        if event.type == QUIT:
-            running = False
-        elif event.type == KEYDOWN and event.key == K_ESCAPE:
-            running = False
-        elif event.type == KEYDOWN and event.key == 118:
-            if nbBeastOnBoat >= 1:
-                if boatRight:
-                    boatRight = False
-                    textSwitch = font.render("Boat Left !",1,(10, 10, 10))
+        for event in pygame.event.get():
+            if event.type == QUIT:
+                return GameState.TITLE
+            elif event.type == KEYDOWN and event.key == K_ESCAPE:
+                return GameState.TITLE
+            elif event.type == KEYDOWN and event.key == 114:
+                return GameState.LION
+            elif event.type == KEYDOWN and event.key == 118 and nb_beast_on_boat >= 1:
+
+                if boat_right:
+                    boat_right = False
+                    text_switch = font.render("Boat Left !",1,(10, 10, 10))
                 else:
-                    boatRight = True
-                    textSwitch = font.render("Boat Right !",1,(10, 10, 10))
+                    boat_right = True
+                    text_switch = font.render("Boat Right !",1,(10, 10, 10))
 
-                nbLionRight = 0
-                nbLionLeft = 0
-                nbBuffaloRight = 0
-                nbBuffaloLeft = 0
+                nb_lion_right = 0
+                nb_lion_left = 0
+                nb_buffalo_right = 0
+                nb_buffalo_left = 0
 
-                for i in range(nbBison):
+                for i in range(nb_bison):
                     if l[i].position == 1:
-                        nbLionLeft += 1
+                        nb_lion_left += 1
                     elif l[i].position == 2:
-                        nbLionRight += 1
+                        nb_lion_right += 1
 
-                for i in range(nbBison, nbBison * 2):
+                for i in range(nb_bison, nb_bison * 2):
                     if l[i].position == 1:
-                        nbBuffaloLeft += 1
+                        nb_buffalo_left += 1
                     elif l[i].position == 2:
-                        nbBuffaloRight += 1
+                        nb_buffalo_right += 1
 
-                if nbLionRight > nbBuffaloRight and nbBuffaloRight != 0:
-                    running = False
+                if nb_lion_right > nb_buffalo_right and nb_buffalo_right != 0:
+                    return GameState.LOSE
 
-                if nbLionLeft > nbBuffaloLeft and nbBuffaloLeft != 0:
-                    running = False
+                if nb_lion_left > nb_buffalo_left and nb_buffalo_left != 0:
+                    return GameState.LOSE
 
-        elif event.type == KEYDOWN and event.key == 105:
-            text = font.render(str(solution[a + 1]),1,(10, 10, 10))
-        elif event.type == pygame.MOUSEBUTTONUP and event.button == 1:
-            mouse_up_left = True
-        elif event.type == pygame.MOUSEBUTTONUP and event.button == 3:
-            mouse_up_right = True
-    
-    screen.fill(BLUE)
+            elif event.type == KEYDOWN and event.key == 105:
+                text = font.render(str(solution[a + 1]),1,(10, 10, 10))
+            elif event.type == pygame.MOUSEBUTTONUP and event.button == 1:
+                mouse_up_left = True
+            elif event.type == pygame.MOUSEBUTTONUP and event.button == 3:
+                mouse_up_right = True
+        
+        screen.fill(BLUE)
 
-    for clickable in clickables:
-    	if clickable.update(mouse_pos = pygame.mouse.get_pos(), mouse_up_right = mouse_up_right, mouse_up_left = mouse_up_left):
-    		clickable.moveBeast(boatRight = boatRight, isBoatFull = isBoatFull)
+        for clickable in clickables:
+        	if clickable.update(mouse_pos = pygame.mouse.get_pos(), mouse_up_right = mouse_up_right, mouse_up_left = mouse_up_left):
+        		clickable.moveBeast(boatRight = boat_right, isBoatFull = is_boat_full)
 
-    screen.blit(textSwitch, textSwitchpos)
-    screen.blit(text, textpos)
-    clickables.draw(screen)
-    pygame.display.flip()
-
-pygame.display.quit()
+        screen.blit(text_switch, text_switchpos)
+        screen.blit(text, textpos)
+        clickables.draw(screen)
+        pygame.display.flip()

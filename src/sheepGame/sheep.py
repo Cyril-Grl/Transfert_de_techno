@@ -66,7 +66,7 @@ class Sheep(pygame.sprite.Sprite):
         beastSideBySide = False
         for beast in etat:
             print(beast.position)
-        if self._mouse_up_left and self._x > 0:
+        if self._mouse_up_left and self._x > 0 and not self._sheep:
             for beast in etat:
                 if(beast.position == self._position - 1):
                     beastSide = True
@@ -85,7 +85,7 @@ class Sheep(pygame.sprite.Sprite):
                 self.rects[0] = self.images[0].get_rect().move(int(self._x), int(self._y))
                 self.rects[1] = self.images[1].get_rect().move(int(self._x), int(self._y))
                 self._position -= 2
-        elif self._mouse_up_right and self._x < self._screen_width:
+        elif self._mouse_up_right and self._x < self._screen_width and self._sheep:
             for beast in etat:
                 if(beast.position == self._position + 1):
                     beastSide = True
