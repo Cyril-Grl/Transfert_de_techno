@@ -1,21 +1,22 @@
-import pygame
-import pygame.freetype
 import os
 import sys
 
+import pygame.freetype
+
 sys.path.insert(1, os.path.abspath("."))
 
-from utils.enum import *
-from utils.load import *
-from bucketGame.bucketGame import *
-from lionGame.lionGame import *
-from sheepGame.sheepGame import *
+from src.utils.enum import *
+from src.utils.load import *
+from src.bucketGame.bucketGame import *
+from src.lionGame.lionGame import *
+from src.sheepGame.sheepGame import *
 
 BLUE = (106, 159, 181)
 WHITE = (255, 255, 255)
 
 WIDTH = 800
 HEIGHT = 800
+
 
 class UIElement(pygame.sprite.Sprite):
 
@@ -61,10 +62,12 @@ class UIElement(pygame.sprite.Sprite):
     def draw(self, surface):
         surface.blit(self.image, self.rect)
 
+
 def create_surface_with_text(text, font_size, text_rgb, bg_rgb):
     font = pygame.freetype.SysFont("Courier", font_size, bold=True)
     surface, _ = font.render(text=text, fgcolor=text_rgb, bgcolor=bg_rgb)
     return surface.convert_alpha()
+
 
 def title_screen(screen):
     start_bucket = UIElement(
@@ -126,9 +129,10 @@ def title_screen(screen):
 
             if ui_action is not None:
                 return ui_action
-        
+
         clickables.draw(screen)
         pygame.display.flip()
+
 
 def win_screen(screen):
     image = load_image('youwin.jpg')
@@ -144,8 +148,9 @@ def win_screen(screen):
                 return GameState.TITLE
 
         screen.fill(BLUE)
-        screen.blit(image, (150,150))
+        screen.blit(image, (150, 150))
         pygame.display.flip()
+
 
 def lose_screen(screen):
     image = load_image('youlose.jpg')
@@ -161,8 +166,9 @@ def lose_screen(screen):
                 return GameState.TITLE
 
         screen.fill(BLUE)
-        screen.blit(image, (150,150))
+        screen.blit(image, (150, 150))
         pygame.display.flip()
+
 
 def main():
     pygame.init()
@@ -205,6 +211,7 @@ def main():
         if game_state == GameState.QUIT:
             pygame.quit()
             return
+
 
 if __name__ == "__main__":
     main()
