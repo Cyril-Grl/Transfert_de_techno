@@ -4,7 +4,7 @@ import tkinter as tk
 from tkinter import filedialog
 from tkinter import ttk
 
-from src.csp import modelize_seaux
+from csp import modelize_seaux
 
 
 def popupmsg(msg):

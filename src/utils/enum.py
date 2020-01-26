@@ -9,3 +9,4 @@ class GameState(Enum):
     SHEEP = 3
     WIN = 4
     LOSE = 5
+    CREATE = 6

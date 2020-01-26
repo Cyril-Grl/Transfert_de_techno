@@ -6,14 +6,14 @@ from bucketGame.cursor import *
 from pygame.locals import *
 from utils.enum import *
 from utils.load import *
-from src.csp import modelize_seaux
+from csp import modelize_seaux
 
 BLUE = (106, 159, 181)
 WHITE = (255, 255, 255)
 
 
-def gameBucket(screen):
-    with open("seaux1.json", "r") as read:
+def gameBucket(screen, path):
+    with open(path, "r") as read:
         data = json.load(read)
 
     nbSeaux = data['nb seaux']
@@ -150,21 +150,3 @@ def gameBucket(screen):
         pygame.display.flip()
 
     return GameState.TITLE
-
-
-"""
-image = load_image('youwin.jpg', -1)
-running = True
-while running:
-    for event in pygame.event.get():
-        if event.type == QUIT:
-            running = False
-        elif event.type == KEYDOWN and event.key == K_ESCAPE:
-            running = False
-    
-    screen.blit(background, (0, 0))   
-    screen.blit(image, (0,0))
-    pygame.display.flip()
-
-pygame.display.quit()
-"""

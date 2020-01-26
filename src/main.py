@@ -5,11 +5,12 @@ import pygame.freetype
 
 sys.path.insert(1, os.path.abspath("."))
 
-from src.utils.enum import *
-from src.utils.load import *
-from src.bucketGame.bucketGame import *
-from src.lionGame.lionGame import *
-from src.sheepGame.sheepGame import *
+from utils.enum import *
+from utils.load import *
+from bucketGame.bucketGame import *
+from lionGame.lionGame import *
+from sheepGame.sheepGame import *
+from create_config import *
 
 BLUE = (106, 159, 181)
 WHITE = (255, 255, 255)
@@ -79,6 +80,15 @@ def title_screen(screen):
         action=GameState.BUCKET,
     )
 
+    create_bucket = UIElement(
+        center_position=(400, 350),
+        font_size=15,
+        bg_rgb=BLUE,
+        text_rgb=WHITE,
+        text="Create Instance",
+        action=GameState.CREATE,
+    )
+
     start_lion = UIElement(
         center_position=(400, 400),
         font_size=30,
@@ -106,7 +116,7 @@ def title_screen(screen):
         action=GameState.QUIT,
     )
 
-    buttons = [start_bucket, start_lion, start_sheep, quit_btn]
+    buttons = [start_bucket, start_lion, start_sheep, quit_btn, create_bucket]
     clickables = pygame.sprite.RenderUpdates(buttons)
 
     clock = pygame.time.Clock()
@@ -188,9 +198,15 @@ def main():
             game_state = title_screen(screen)
 
         if game_state == GameState.BUCKET:
-            game_state = gameBucket(screen)
+            path = find_file()
+            game_state = gameBucket(screen, path)
             screen = pygame.display.set_mode((WIDTH, HEIGHT))
             pygame.mouse.set_visible(1)
+
+        if game_state == GameState.CREATE:
+                conf = CreateConfigSeaux()
+                conf.start()
+                game_state = GameState.TITLE
 
         if game_state == GameState.LION:
             game_state = gameLion(screen)
