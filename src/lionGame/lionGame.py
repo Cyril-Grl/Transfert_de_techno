@@ -14,8 +14,8 @@ HEIGHT = 1000
 GAME_HEIGHT = 800
 
 
-def gameLion(screen):
-    with open("riviere1.json", "r") as read:
+def gameLion(screen, path):
+    with open(path, "r") as read:
         data = json.load(read)
 
     nb_bison = data["nb bisons"]

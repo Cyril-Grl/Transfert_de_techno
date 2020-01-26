@@ -209,7 +209,8 @@ def main():
                 game_state = GameState.TITLE
 
         if game_state == GameState.LION:
-            game_state = gameLion(screen)
+            path = find_file()
+            game_state = gameLion(screen, path)
             screen = pygame.display.set_mode((WIDTH, HEIGHT))
             pygame.mouse.set_visible(1)
 
