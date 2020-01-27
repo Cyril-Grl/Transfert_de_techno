@@ -7,7 +7,7 @@ int: nb_bison;
 int: nb_lion = nb_bison;
 int: nb_animaux = nb_bison*2;
 array[1..nb_animaux] of int: init;
-
+int: init_rad;
 int: max_num_to_cross = 2;
 int: A = 1;
 int: B = 2;
@@ -23,7 +23,7 @@ constraint
       actions[1,i] = init[i]
    )
    /\
-   position_radeau[1] = A
+   position_radeau[1] = init_rad
    /\
    transfered[1] = 1..nb_animaux
 ;

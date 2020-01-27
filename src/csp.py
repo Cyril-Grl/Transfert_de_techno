@@ -30,6 +30,18 @@ def modelize_riviere(nb_bison=3, max_etapes=10):
     return instance.solve()
 
 
+def modelize_riviere1(nb_bison=3, max_etapes=10, init=None, radeau=True):
+    seaux = Model("./riviere1.mzn")
+    gecode = Solver.lookup("gecode")
+    instance = Instance(gecode, seaux)
+    instance["init_rad"] = 2 if radeau else 1
+    instance["init"] = init
+    instance["nb_bison"] = nb_bison
+    instance["max_etapes"] = max_etapes
+    return instance.solve()
+
+
+
 def create_config_seaux(num_config=1, nb_seaux=3, max_etapes=10, contenance_max=None, contenu=None, fin=None):
     if contenu is None:
         contenu = [8, 0, 0]
