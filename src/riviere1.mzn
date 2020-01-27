@@ -6,6 +6,7 @@ int: max_etapes;
 int: nb_bison;
 int: nb_lion = nb_bison;
 int: nb_animaux = nb_bison*2;
+array[1..nb_animaux] of int: init;
 
 int: max_num_to_cross = 2;
 int: A = 1;
@@ -19,7 +20,7 @@ array[1..max_etapes] of var set of 1..nb_animaux: transfered;
 constraint
    % initilisation
    forall(i in 1..nb_animaux) (
-      actions[1,i] = A
+      actions[1,i] = init[i]
    )
    /\
    position_radeau[1] = A
