@@ -29,7 +29,7 @@ constraint
 ;
 
 constraint
-  % il manque po d'eau!
+  % il ne manque pas d'eau!
   forall(e in 1..max_etapes)(
     contenu_max = sum(i in 1..nb_seaux)(etat[e,i])
   )

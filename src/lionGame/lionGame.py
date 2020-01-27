@@ -1,11 +1,9 @@
-import os
-import sys
-import pygame
 import json
 
 from pygame.locals import *
-from lionGame.lion import *
+
 from lionGame.buffalo import *
+from lionGame.lion import *
 from utils.enum import *
 
 BLUE = (106, 159, 181)
@@ -15,8 +13,8 @@ HEIGHT = 1000
 
 GAME_HEIGHT = 800
 
-def gameLion(screen):
 
+def gameLion(screen):
     with open("riviere1.json", "r") as read:
         data = json.load(read)
 
@@ -36,24 +34,24 @@ def gameLion(screen):
     l = []
 
     for i in range(nb_bison):
-        lion = Lion(x = 0, y = y, width = split_width, height = split_height)
+        lion = Lion(x=0, y=y, width=split_width, height=split_height)
         l.append(lion)
         y += split_height
 
     for i in range(nb_bison):
-        buffalo = Buffalo(x = 0, y = y, width = split_width, height = split_height)
+        buffalo = Buffalo(x=0, y=y, width=split_width, height=split_height)
         l.append(buffalo)
         y += split_height
 
     clickables = pygame.sprite.RenderUpdates(l)
 
-    font = pygame.font.Font(None,30)
+    font = pygame.font.Font(None, 30)
 
-    text = font.render("Press i key ton get the help !",1,(10, 10, 10))
-    textpos = (0,900)
+    text = font.render("Press i key ton get the help !", 1, (10, 10, 10))
+    textpos = (0, 900)
 
-    text_switch = font.render("Press v to switch side the boat !",1,(10, 10, 10))
-    text_switchpos = (400,900)
+    text_switch = font.render("Press v to switch side the boat !", 1, (10, 10, 10))
+    text_switchpos = (400, 900)
 
     boat_right = False
 
@@ -95,10 +93,10 @@ def gameLion(screen):
 
                 if boat_right:
                     boat_right = False
-                    text_switch = font.render("Boat Left !",1,(10, 10, 10))
+                    text_switch = font.render("Boat Left !", 1, (10, 10, 10))
                 else:
                     boat_right = True
-                    text_switch = font.render("Boat Right !",1,(10, 10, 10))
+                    text_switch = font.render("Boat Right !", 1, (10, 10, 10))
 
                 nb_lion_right = 0
                 nb_lion_left = 0
@@ -117,24 +115,27 @@ def gameLion(screen):
                     elif l[i].position == 2:
                         nb_buffalo_right += 1
 
-                if nb_lion_right > nb_buffalo_right and nb_buffalo_right != 0:
+                if nb_lion_right > nb_buffalo_right != 0:
                     return GameState.LOSE
 
-                if nb_lion_left > nb_buffalo_left and nb_buffalo_left != 0:
+                if nb_lion_left > nb_buffalo_left != 0:
                     return GameState.LOSE
 
             elif event.type == KEYDOWN and event.key == 105:
-                text = font.render(str(solution[a + 1]),1,(10, 10, 10))
+                print("coucou")
+
+                text = font.render(str(solution[a + 1]), 1, (10, 10, 10))
             elif event.type == pygame.MOUSEBUTTONUP and event.button == 1:
                 mouse_up_left = True
             elif event.type == pygame.MOUSEBUTTONUP and event.button == 3:
                 mouse_up_right = True
-        
+
         screen.fill(BLUE)
 
         for clickable in clickables:
-        	if clickable.update(mouse_pos = pygame.mouse.get_pos(), mouse_up_right = mouse_up_right, mouse_up_left = mouse_up_left):
-        		clickable.moveBeast(boatRight = boat_right, isBoatFull = is_boat_full)
+            if clickable.update(mouse_pos=pygame.mouse.get_pos(), mouse_up_right=mouse_up_right,
+                                mouse_up_left=mouse_up_left):
+                clickable.moveBeast(boatRight=boat_right, isBoatFull=is_boat_full)
 
         screen.blit(text_switch, text_switchpos)
         screen.blit(text, textpos)

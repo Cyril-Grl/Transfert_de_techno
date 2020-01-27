@@ -1,6 +1,7 @@
 import pygame
 from utils.load import *
 
+
 class Buffalo(pygame.sprite.Sprite):
 
     def __init__(self, x, y, width, height):
@@ -18,13 +19,13 @@ class Buffalo(pygame.sprite.Sprite):
         default_image = load_image('buffalo.png', -1)
         default_image = pygame.transform.scale(default_image, (int(width), int(height)))
         highlighted_image = default_image.copy()
-        pygame.draw.rect(highlighted_image, (255,0,0), (0, 0, int(self._width), int(self._height)), 2)
+        pygame.draw.rect(highlighted_image, (255, 0, 0), (0, 0, int(self._width), int(self._height)), 2)
 
         self.images = [default_image, highlighted_image]
 
         self.rects = [
-            default_image.get_rect().move(int(x),int(y)),
-            highlighted_image.get_rect().move(int(x),int(y)),
+            default_image.get_rect().move(int(x), int(y)),
+            highlighted_image.get_rect().move(int(x), int(y)),
         ]
 
     @property
@@ -38,7 +39,6 @@ class Buffalo(pygame.sprite.Sprite):
     @property
     def position(self):
         return self._position
-    
 
     def update(self, mouse_pos, mouse_up_right, mouse_up_left):
         if self.rect.collidepoint(mouse_pos):
