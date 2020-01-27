@@ -34,13 +34,13 @@ def gameLion(screen, path):
     l = []
 
     for i in range(nb_bison):
-        lion = Lion(x=0, y=y, width=split_width, height=split_height)
-        l.append(lion)
+        buffalo = Buffalo(x=0, y=y, width=split_width, height=split_height)
+        l.append(buffalo)
         y += split_height
 
     for i in range(nb_bison):
-        buffalo = Buffalo(x=0, y=y, width=split_width, height=split_height)
-        l.append(buffalo)
+        lion = Lion(x=0, y=y, width=split_width, height=split_height)
+        l.append(lion)
         y += split_height
 
     clickables = pygame.sprite.RenderUpdates(l)
@@ -105,15 +105,15 @@ def gameLion(screen, path):
 
                 for i in range(nb_bison):
                     if l[i].position == 1:
-                        nb_lion_left += 1
-                    elif l[i].position == 2:
-                        nb_lion_right += 1
-
-                for i in range(nb_bison, nb_bison * 2):
-                    if l[i].position == 1:
                         nb_buffalo_left += 1
                     elif l[i].position == 2:
                         nb_buffalo_right += 1
+
+                for i in range(nb_bison, nb_bison * 2):
+                    if l[i].position == 1:
+                        nb_lion_left += 1
+                    elif l[i].position == 2:
+                        nb_lion_right += 1
 
                 if nb_lion_right > nb_buffalo_right != 0:
                     return GameState.LOSE
@@ -122,8 +122,6 @@ def gameLion(screen, path):
                     return GameState.LOSE
 
             elif event.type == KEYDOWN and event.key == 105:
-                print("coucou")
-
                 text = font.render(str(solution[a + 1]), 1, (10, 10, 10))
             elif event.type == pygame.MOUSEBUTTONUP and event.button == 1:
                 mouse_up_left = True
