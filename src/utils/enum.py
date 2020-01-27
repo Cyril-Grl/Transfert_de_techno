@@ -1,5 +1,6 @@
 from enum import Enum
 
+
 class GameState(Enum):
     QUIT = -1
     TITLE = 0
@@ -8,3 +9,4 @@ class GameState(Enum):
     SHEEP = 3
     WIN = 4
     LOSE = 5
+    CREATE = 6

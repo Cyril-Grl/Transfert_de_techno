@@ -64,23 +64,18 @@ class Sheep(pygame.sprite.Sprite):
     def moveBeast(self, etat):
         beastSide = False
         beastSideBySide = False
-        for beast in etat:
-            print(beast.position)
         if self._mouse_up_left and self._x > 0 and not self._sheep:
             for beast in etat:
                 if(beast.position == self._position - 1):
                     beastSide = True
                 if(beast.position == self._position - 2):
-                    beastSideBySide = True
-            print("left : " + str(beastSide) + " " + str(beastSideBySide))        
+                    beastSideBySide = True      
             if not beastSide:
-                print("move left 1")
                 self._x -= self._width
                 self.rects[0] = self.images[0].get_rect().move(int(self._x), int(self._y))
                 self.rects[1] = self.images[1].get_rect().move(int(self._x), int(self._y))
                 self._position -= 1
             elif beastSide and not beastSideBySide and self._x - self._width * 2 >= 0:
-                print("move left 2")
                 self._x -= self._width * 2
                 self.rects[0] = self.images[0].get_rect().move(int(self._x), int(self._y))
                 self.rects[1] = self.images[1].get_rect().move(int(self._x), int(self._y))
@@ -91,15 +86,12 @@ class Sheep(pygame.sprite.Sprite):
                     beastSide = True
                 if(beast.position == self._position + 2):
                     beastSideBySide = True
-            print("right : " + str(beastSide) + " " + str(beastSideBySide))  
             if not beastSide:
-                print("move right 1")
                 self._x += self._width
                 self.rects[0] = self.images[0].get_rect().move(int(self._x), int(self._y))
                 self.rects[1] = self.images[1].get_rect().move(int(self._x), int(self._y))
                 self._position += 1
             elif beastSide and not beastSideBySide and self._x + self._width * 2 < self._screen_width:
-                print("move right 2")
                 self._x += self._width * 2
                 self.rects[0] = self.images[0].get_rect().move(int(self._x), int(self._y))
                 self.rects[1] = self.images[1].get_rect().move(int(self._x), int(self._y))

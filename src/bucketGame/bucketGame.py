@@ -1,21 +1,19 @@
-import os
-import sys
-import pygame
 import json
 
-from utils.load import *
+import pygame
 from bucketGame.bucket import *
 from bucketGame.cursor import *
 from pygame.locals import *
-
 from utils.enum import *
+from utils.load import *
+from csp import modelize_seaux
 
 BLUE = (106, 159, 181)
 WHITE = (255, 255, 255)
 
-def gameBucket(screen):
 
-    with open("seaux1.json", "r") as read:
+def gameBucket(screen, path):
+    with open(path, "r") as read:
         data = json.load(read)
 
     nbSeaux = data['nb seaux']
@@ -41,7 +39,7 @@ def gameBucket(screen):
     width = screen_width / 3
 
     for i in range(nbSeaux):
-        bucket = Bucket(x = x, y = y, width = width, height = height, s = contenanceMax[i], q = initial[i])
+        bucket = Bucket(x=x, y=y, width=width, height=height, s=contenanceMax[i], q=initial[i])
         groupe.add(bucket)
         x += width
         if i == 2:
@@ -55,9 +53,9 @@ def gameBucket(screen):
 
     objetSvg = None
 
-    font = pygame.font.Font(None,60)
-    text = font.render("Press i key ton get the help !",1,(10, 10, 10))
-    textpos = (200,500)
+    font = pygame.font.Font(None, 60)
+    text = font.render("Press i key ton get the help !", 1, (10, 10, 10))
+    textpos = (200, 500)
 
     running = True
 
@@ -74,11 +72,35 @@ def gameBucket(screen):
             elif event.type == KEYDOWN and event.key == 114:
                 return GameState.BUCKET
             elif event.type == KEYDOWN and event.key == 105:
-                font = pygame.font.Font(None, 30)
-                text = font.render(str(solution[a + 1]),1,(10, 10, 10))
+                actuel = []
+                for i, b in enumerate(groupe):
+                    if i != len(groupe) - 1:
+                        actuel.append(b._quantity)
+                soluce = modelize_seaux(nb_seaux=data['nb seaux'], max_etapes=10, contenance_max=contenanceMax,
+                                        contenu=actuel, fin=final)
+                if len(soluce) == 0:
+                    font = pygame.font.Font(None, 30)
+                    text = font.render("Be sure that your bucket is empty before asking for advice!", 1, (10, 10, 10))
+                else:
+                    sol = soluce['etat']
+                    dif1, dif2 = -1, -1
+                    for i in range(len(sol[0])):
+                        if sol[0][i] != sol[1][i]:
+                            if dif1 == -1:
+                                dif1 = i
+                            else:
+                                dif2 = i
+                    if sol[0][dif1] > sol[1][dif1]:
+                        font = pygame.font.Font(None, 30)
+                        text = font.render(f'Why dont you fill the bucket {dif2 + 1} with the bucket {dif1 + 1}?', 1,
+                                           (10, 10, 10))
+                    else:
+                        font = pygame.font.Font(None, 30)
+                        text = font.render(f'Why dont you fill the bucket {dif1 + 1} with the bucket {dif2 + 1}?', 1,
+                                           (10, 10, 10))
             elif event.type == MOUSEBUTTONDOWN:
                 for s in groupe:
-                    if isinstance(s,Cursor):
+                    if isinstance(s, Cursor):
                         continue
                     elif cursor.fillCursorBucket(s):
                         cursor.quantity = cursor.quantity + s.quantity
@@ -91,7 +113,7 @@ def gameBucket(screen):
                         break
                     elif cursor.emptyCursorBucket(s):
                         dif = s.size - s.quantity
-                        if(dif >= cursor.quantity):
+                        if (dif >= cursor.quantity):
                             s.quantity = s.quantity + cursor.quantity
                             objetSvg.selected = False
                             objetSvg.printQuantity()
@@ -110,9 +132,9 @@ def gameBucket(screen):
 
         etat = []
         for s in groupe:
-            if isinstance(s,Cursor):
+            if isinstance(s, Cursor):
                 continue
-        
+
             etat.append(s.quantity)
 
         if etat in solution:
@@ -128,19 +150,3 @@ def gameBucket(screen):
         pygame.display.flip()
 
     return GameState.TITLE
-"""
-image = load_image('youwin.jpg', -1)
-running = True
-while running:
-    for event in pygame.event.get():
-        if event.type == QUIT:
-            running = False
-        elif event.type == KEYDOWN and event.key == K_ESCAPE:
-            running = False
-    
-    screen.blit(background, (0, 0))   
-    screen.blit(image, (0,0))
-    pygame.display.flip()
-
-pygame.display.quit()
-"""
