@@ -5,6 +5,7 @@ from pygame.locals import *
 from lionGame.buffalo import *
 from lionGame.lion import *
 from utils.enum import *
+from csp import modelize_riviere1
 
 BLUE = (106, 159, 181)
 
@@ -90,7 +91,7 @@ def gameLion(screen, path):
             elif event.type == KEYDOWN and event.key == 114:
                 return GameState.LION
             elif event.type == KEYDOWN and event.key == 118 and nb_beast_on_boat >= 1:
-
+                text = font.render("Press i for advice!", 1, (10, 10, 10))
                 if boat_right:
                     boat_right = False
                     text_switch = font.render("Boat Left !", 1, (10, 10, 10))
@@ -122,7 +123,22 @@ def gameLion(screen, path):
                     return GameState.LOSE
 
             elif event.type == KEYDOWN and event.key == 105:
-                text = font.render(str(solution[a + 1]), 1, (10, 10, 10))
+                if any(e == 3 for e in etat):
+                    text = font.render("The boat must be empty!", 1, (10, 10, 10))
+                else:
+                    soluce = modelize_riviere1(nb_bison=int(len(etat)/2), max_etapes=10, init=etat, radeau=boat_right)
+                    if len(soluce) == 0:
+                        font = pygame.font.Font(None, 30)
+                        text = font.render("I dont want to help you!", 1, (10, 10, 10))
+                    else:
+                        sol = soluce['transfered']
+                        to_transfer = []
+                        for i in sol[1]:
+                            if i <= int(len(etat)/2):
+                                to_transfer.append('Bison ')
+                            else:
+                                to_transfer.append('Lion ')
+                        text = font.render("Move : "+"".join(to_transfer), 1, (10, 10, 10))
             elif event.type == pygame.MOUSEBUTTONUP and event.button == 1:
                 mouse_up_left = True
             elif event.type == pygame.MOUSEBUTTONUP and event.button == 3:
